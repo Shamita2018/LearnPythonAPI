@@ -3,6 +3,9 @@ import json
 import random
 import string
 import time
+from faker import Faker
+
+created_user_id = None
 #base url
 base_url = "https://gorest.co.in"
 
@@ -79,3 +82,39 @@ def my_function_delete(user_id):
 #my_function_put(userid)
 #my_function_delete(userid)
 generate_random_email()
+
+
+def test_create_user():
+    """POST /users: creates a new user and stores the returned ID in created_user_id."""
+    global created_user_id
+
+    fake = Faker(locale="en_US")
+    name = fake.name()
+    while len(name) > 10:
+        name = fake.name()
+
+    url = base_url + "/public/v2/users"
+    payload = {
+        "name": name,
+        "email": fake.unique.email(),
+        "gender": "female",
+        "status": random.choice(["active", "inactive"]),
+    }
+    headers = {"Authorization": auth_token}
+
+    response = requests.post(url, json=payload, headers=headers)
+    json_data = response.json()
+    print("test_create_user response:", json.dumps(json_data, indent=4))
+    print("POST  json response body", json_data)
+
+    assert response.status_code == 201
+    assert "id" in json_data
+    assert json_data["id"] is not None
+    assert isinstance(json_data["id"], int)
+
+    created_user_id = json_data["id"]
+
+
+def test_use_created_user():
+    """Placeholder: consumes the ID stored by test_create_user."""
+    print("created_user_id:", created_user_id)
