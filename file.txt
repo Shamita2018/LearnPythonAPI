@@ -1,0 +1,31 @@
+Add new function on @api_tests/api_request.py:
+I'm building a Python REST API test suite using the `requests` library (pytest style).
+
+Write a test function for creating a new user via:
+  POST https://gorest.co.in/public/v2/users
+
+Requirements:
+
+**Auth:**
+- Add an Authorization header with value: `Bearer <cdebdd9c0b9a192e46660843d6353deb8f2470cc80894a02e33ae612f6d39bdb>`
+
+**Request body (JSON):**
+- `name`: a random English first + last name, max 10 characters total (e.g. "Tom Clark"). Use the `faker` library with `locale="en_US"` and keep regenerating until len(name) <= 10.
+- `email`: a unique random email (use faker or uuid to avoid conflicts)
+- `gender`: hardcoded to `"female"`
+- `status`: randomly chosen between `"active"` and `"inactive"` using `random.choice`
+
+**Assertions:**
+- Assert HTTP response status code is `201`
+- Assert the response JSON contains an `"id"` field that is not None and is an integer
+
+**Store the ID:**
+- Save the returned `id` into a module-level variable called `created_user_id` so it can be reused in subsequent test functions in the same file
+
+**Code style:**
+- Use `pytest` with a plain function `def test_create_user():`
+- Import: `requests`, `random`, `faker.Faker`
+- Print the full response JSON for debugging
+- Add a short docstring explaining what the test does
+
+Also show me a second stub function `def test_use_created_user():` that reads `created_user_id` and prints it, as a placeholder showing how the ID would be consumed in the next request.
